@@ -7,7 +7,7 @@ export interface Server {
   version: string;
   status: 'CREATING'|'RUNNING'|'STOPPED'|'ERROR';
   ip?: string;
-  createdAt: string; // ISO
+  createdAt: string;
 }
 
 export interface NewServer {

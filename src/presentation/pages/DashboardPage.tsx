@@ -10,7 +10,17 @@ import { GetServersUseCase } from '@application/usecases/GetServersUseCase';
 const serverRepo = new HttpServerRepository();
 
 const DashboardPage: React.FC = () => {
-  const [servers, setServers] = useState<Server[]>([]);
+  const [servers, setServers] = useState<Server[]>([
+    {
+      id: 'choripzo',
+      name: 'choripzeano',
+      region: 'us-east-1',
+      version: '20.10',
+      status: 'CREATING',
+      ip: '192.168.0.10',
+      createdAt: new Date().toISOString(), // ISO string as per type
+    },
+  ]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,9 +28,9 @@ const DashboardPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const usecase = new GetServersUseCase(serverRepo);
-      const list = await usecase.execute();
-      setServers(list);
+      // const usecase = new GetServersUseCase(serverRepo);
+      // const list = await usecase.execute();
+      // setServers(list);
     } catch (err: any) {
       setError(err?.message ?? 'Error al cargar servidores');
     } finally {
@@ -38,10 +48,27 @@ const DashboardPage: React.FC = () => {
 
   return (
     <Layout>
-      <h2 style={{ marginBottom: 12 }}>Tus servidores</h2>
-      <div style={{ display: 'grid', gap: 16, gridTemplateColumns: '1fr' }}>
-        <ServerForm onCreate={handleCreate} />
-        {loading ? <div>Cargando...</div> : error ? <div style={{ color: 'crimson' }}>{error}</div> : <ServerList servers={servers} />}
+      <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
+
+        <div className="grid gap-6 md:grid-cols-1">
+          {/* Card: Crear servidor */}
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.10)]">
+            <h3 className="text-lg font-semibold mb-3">Crear nuevo servidor</h3>
+            <ServerForm onCreate={handleCreate} />
+          </section>
+
+          {/* Card: Lista de servidores */}
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.10)]">
+            <h3 className="text-lg font-semibold mb-3">Listado</h3>
+            {loading ? (
+              <div>Cargando...</div>
+            ) : error ? (
+              <div className="text-red-600">{error}</div>
+            ) : (
+              <ServerList servers={servers} />
+            )}
+          </section>
+        </div>
       </div>
     </Layout>
   );
