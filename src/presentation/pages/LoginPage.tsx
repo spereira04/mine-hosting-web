@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@presentation/context/AuthContext';
-import { SiteHeader } from '@presentation/components/SiteHeader';
 
 const LoginPage: React.FC = () => {
   const { login } = useAuth();
@@ -26,58 +25,53 @@ const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className="auth-page">
-      <SiteHeader />
-
-      {/* Fondo con imagen + blur */}
-      <div className="auth-bg" aria-hidden>
-        <img src="/images/minecraft_landscape.jpg" alt="" />
-        <div className="auth-scrim" />
+    <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.10)]">
+      <div className="mb-4">
+        <h1 className="m-0 text-2xl font-bold">Bienvenido</h1>
+        <p className="mt-1 text-sm text-slate-500">Entrá para administrar tus servidores de Minecraft.</p>
       </div>
 
-      <div className="auth-content">
-        <section className="auth-card">
-          <div className="auth-card__header">
-            <h1>Bienvenido</h1>
-            <p>Entrá para administrar tus servidores de Minecraft.</p>
-          </div>
+      <form onSubmit={onSubmit} className="grid gap-3">
+        <label className="grid gap-1 text-sm">
+          <span>Email</span>
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="steve@ejemplo.com"
+            required
+            className="w-full rounded-md border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500/60 focus:border-green-500 bg-white"
+          />
+        </label>
 
-          <form onSubmit={onSubmit} className="auth-form">
-            <label>
-              Email
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="steve@ejemplo.com"
-                required
-              />
-            </label>
+        <label className="grid gap-1 text-sm">
+          <span>Contraseña</span>
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+            className="w-full rounded-md border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500/60 focus:border-green-500 bg-white"
+          />
+        </label>
 
-            <label>
-              Contraseña
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-              />
-            </label>
+        {error && <div className="text-sm text-red-600">{error}</div>}
 
-            {error && <div className="form-error">{error}</div>}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-md bg-green-600 px-3 py-2 font-bold text-white shadow-[0_6px_16px_rgba(22,163,74,0.25)] transition hover:-translate-y-[1px] disabled:opacity-65"
+        >
+          {loading ? 'Ingresando...' : 'Ingresar'}
+        </button>
+      </form>
 
-            <button type="submit" className="btn primary" disabled={loading}>
-              {loading ? 'Ingresando...' : 'Ingresar'}
-            </button>
-          </form>
-
-          <p className="auth-alt">
-            ¿No tenés cuenta? <Link to="/signin">Crear una</Link>
-          </p>
-        </section>
-      </div>
-    </div>
+      <p className="mt-3 text-sm">
+        ¿No tenés cuenta?{' '}
+        <Link to="/auth/signin" className="text-blue-600 hover:underline">Crear una</Link>
+      </p>
+    </section>
   );
 };
 
