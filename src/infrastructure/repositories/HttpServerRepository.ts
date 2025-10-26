@@ -1,5 +1,6 @@
 import type { ServerRepository } from '@domain/repositories/ServerRepository';
 import type { NewServer, Server, ServerId } from '@domain/entities/Server';
+import type { Region } from '@domain/entities/Region';
 import { api } from '@infrastructure/http/axiosClient';
 
 export class HttpServerRepository implements ServerRepository {
@@ -16,5 +17,10 @@ export class HttpServerRepository implements ServerRepository {
   async getById(id: ServerId): Promise<Server> {
     const { data } = await api.get(`/servers/${id}`);
     return data;
+  }
+
+  async getRegions(): Promise<Region[]> {
+    //TODO Implement
+    return new Promise();
   }
 }

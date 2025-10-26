@@ -2,11 +2,23 @@
 import React, { useState } from 'react';
 import type { NewServer } from '@domain/entities/Server';
 
-type Props = { onCreate: (input: NewServer) => Promise<void> };
+type Props = {
+  onCreate: (input: { name: string; region: string; version: string }) => Promise<void> | void;
+  regions: Region[];
+  regionsLoading?: boolean;
+  regionsError?: string | null;
+  onRetryRegions?: () => void;
+};
 
-export const ServerForm: React.FC<Props> = ({ onCreate }) => {
+export const ServerForm: React.FC<Props> = ({ 
+  onCreate,
+  regions,
+  regionsLoading,
+  regionsError,
+  onRetryRegions
+}) => {
   const [name, setName] = useState('');
-  const [region, setRegion] = useState('us-east-1');
+  const [region, setRegion] = useState('');
   const [version, setVersion] = useState('1.21');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,6 +30,8 @@ export const ServerForm: React.FC<Props> = ({ onCreate }) => {
     try {
       await onCreate({ name, region, version });
       setName('');
+      setRegion('');
+      setVersion('1.21');
     } catch (err: any) {
       setError(err?.message ?? 'Error al crear servidor');
     } finally {
@@ -44,7 +58,7 @@ export const ServerForm: React.FC<Props> = ({ onCreate }) => {
       </div>
 
       {/* Región */}
-      <div className="grid gap-1 text-sm sm:flex sm:items-center sm:gap-3">
+{/*      <div className="grid gap-1 text-sm sm:flex sm:items-center sm:gap-3">
         <label htmlFor="srv-region" className="text-sm sm:w-28 sm:shrink-0 whitespace-nowrap">
           Región
         </label>
@@ -59,7 +73,50 @@ export const ServerForm: React.FC<Props> = ({ onCreate }) => {
           <option value="sa-east-1">South America (São Paulo)</option>
           <option value="eu-west-1">EU (Ireland)</option>
         </select>
+      </div>*/}
+
+
+
+      <div className="grid gap-1 text-sm sm:flex sm:items-center sm:gap-3">
+        <label htmlFor="srv-region" className="text-sm sm:w-28 sm:shrink-0 whitespace-nowrap">
+          Región
+        </label>
+
+        {regionsLoading ? (
+          <div className="h-10 w-full animate-pulse rounded-md bg-slate-200" />
+        ) : regionsError ? (
+          <div className="flex items-center gap-3">
+            <span className="text-red-600 text-sm">{regionsError}</span>
+            {onRetryRegions && (
+              <button
+                type="button"
+                onClick={onRetryRegions}
+                className="text-sm underline text-slate-700"
+              >
+                Reintentar
+              </button>
+            )}
+          </div>
+        ) : (
+          <select
+            value={region}
+            onChange={e => setRegion(e.target.value)}
+            required
+            className="w-full flex-1 min-w-0 rounded-md border border-slate-300 px-3 py-2 bg-white
+                     focus:outline-none focus:ring-2 focus:ring-green-500/60 focus:border-green-500"
+          >
+            <option value="" disabled>Elegí una región…</option>
+            {regions.map(r => (
+              <option key={r.id} value={r.id}>{r.name}</option>
+            ))}
+          </select>
+        )}
       </div>
+
+
+
+
+
 
       {/* Versión */}
       <div className="grid gap-1 text-sm sm:flex sm:items-center sm:gap-3">
