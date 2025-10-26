@@ -45,7 +45,8 @@ export default function SiteHeader() {
             <div className="h-6 w-40 animate-pulse rounded bg-slate-200" />
           ) : logged ? (
             <>
-              <NavLink to="/app" className={linkCx}>Dashboard</NavLink>
+              <NavLink to="/app" className={linkCx}>Servidores</NavLink>
+              <NavLink to="/store" className={linkCx}>Tienda</NavLink>
               <div
                 className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-white text-xs"
                 title={user?.email}
@@ -113,7 +114,10 @@ export default function SiteHeader() {
               <hr className="border-slate-200" />
               <nav className="grid p-1">
                 <Link to="/app" onClick={() => setOpen(false)} className="px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-md">
-                  Dashboard
+                  Servidores
+                </Link>
+                <Link to="/store" onClick={() => setOpen(false)} className="px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-md">
+                  Tienda
                 </Link>
                 <button onClick={handleLogout} className="text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-md">
                   Cerrar sesión

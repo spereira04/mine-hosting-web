@@ -4,6 +4,7 @@ import { ProtectedRoute } from '@presentation/routes/ProtectedRoute';
 import LoginPage from '@presentation/pages/LoginPage';
 import SignUpPage from '@presentation/pages/SignUpPage';
 import DashboardPage from '@presentation/pages/DashboardPage';
+import StorePage from '@presentation/pages/StorePage';
 import AuthShell from '@presentation/components/AuthShell';
 
 // const router = createBrowserRouter([
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
 
   { path: '/', element: <DashboardPage /> },
   { path: '/app', element: <DashboardPage /> },
+  { path: '/store', element: <StorePage /> }
 ]);
 
 export const AppRouter: React.FC = () => <RouterProvider router={router} />;
