@@ -1,1 +1,7 @@
 @import "tailwindcss";
+
+/* src/styles/globals.css */
+@layer base {
+  input, select, textarea, button { @apply text-base; }
+  @screen sm { input, select, textarea, button { @apply text-sm; } }
+}

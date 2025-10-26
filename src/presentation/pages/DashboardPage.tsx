@@ -1,3 +1,4 @@
+// src/presentation/pages/DashboardPage.tsx
 import React, { useEffect, useState } from 'react';
 import { Layout } from '@presentation/components/Layout';
 import { ServerForm } from '@presentation/components/ServerForm';
@@ -15,10 +16,10 @@ const DashboardPage: React.FC = () => {
       id: 'choripzo',
       name: 'choripzeano',
       region: 'us-east-1',
-      version: '20.10',
+      version: '1.21',
       status: 'CREATING',
       ip: '192.168.0.10',
-      createdAt: new Date().toISOString(), // ISO string as per type
+      createdAt: new Date().toISOString(),
     },
   ]);
   const [loading, setLoading] = useState(true);
@@ -48,17 +49,17 @@ const DashboardPage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
+      <main className="mx-auto w-full max-w-5xl px-4 py-4 sm:px-6 sm:py-6 overflow-x-clip">
 
-        <div className="grid gap-6 md:grid-cols-1">
+        <div className="grid gap-6 lg:grid-cols-1">
           {/* Card: Crear servidor */}
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.10)]">
+          <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.10)]">
             <h3 className="text-lg font-semibold mb-3">Crear nuevo servidor</h3>
             <ServerForm onCreate={handleCreate} />
           </section>
 
-          {/* Card: Lista de servidores */}
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.10)]">
+          {/* Card: Listado */}
+          <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.10)]">
             <h3 className="text-lg font-semibold mb-3">Listado</h3>
             {loading ? (
               <div>Cargando...</div>
@@ -69,7 +70,7 @@ const DashboardPage: React.FC = () => {
             )}
           </section>
         </div>
-      </div>
+      </main>
     </Layout>
   );
 };

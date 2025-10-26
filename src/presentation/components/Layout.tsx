@@ -1,6 +1,7 @@
 // src/presentation/components/Layout.tsx
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import SiteHeader from '@presentation/components/SiteHeader';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { pathname } = useLocation();
@@ -33,18 +34,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       </div>
 
       {/* Header (example) */}
-      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/60 backdrop-blur">
-        <div className="mx-auto max-w-[1100px] px-4 py-3 flex items-center justify-between text-slate-900">
-          <div className="flex items-center gap-2 font-extrabold text-lg">
-            <span aria-hidden>⛏️</span>
-            <Link to="/">Mine Hosting</Link>
-          </div>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link to="/auth/login" className="hover:underline">Login</Link>
-            <Link to="/auth/signin" className="hover:underline">Sign up</Link>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader/>
 
       {/* Page content */}
       <main className="mx-auto w-full max-w-5xl p-4 sm:p-6">

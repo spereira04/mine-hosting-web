@@ -1,9 +1,8 @@
+// src/presentation/components/ServerForm.tsx
 import React, { useState } from 'react';
 import type { NewServer } from '@domain/entities/Server';
 
-type Props = {
-  onCreate: (input: NewServer) => Promise<void>;
-};
+type Props = { onCreate: (input: NewServer) => Promise<void> };
 
 export const ServerForm: React.FC<Props> = ({ onCreate }) => {
   const [name, setName] = useState('');
@@ -29,8 +28,8 @@ export const ServerForm: React.FC<Props> = ({ onCreate }) => {
   return (
     <form onSubmit={submit} className="grid gap-4">
       {/* Nombre */}
-      <div className="flex items-center gap-3 text-sm">
-        <label htmlFor="srv-name" className="w-28 shrink-0 whitespace-nowrap">
+      <div className="grid gap-1 text-sm sm:flex sm:items-center sm:gap-3">
+        <label htmlFor="srv-name" className="text-sm sm:w-28 sm:shrink-0 whitespace-nowrap">
           Nombre
         </label>
         <input
@@ -39,21 +38,21 @@ export const ServerForm: React.FC<Props> = ({ onCreate }) => {
           onChange={e => setName(e.target.value)}
           placeholder="Mi servidor"
           required
-          className="flex-1 min-w-0 rounded-md border border-slate-300 px-3 py-2 bg-white
+          className="w-full flex-1 min-w-0 rounded-md border border-slate-300 px-3 py-2 bg-white
                      focus:outline-none focus:ring-2 focus:ring-green-500/60 focus:border-green-500"
         />
       </div>
 
       {/* Región */}
-      <div className="flex items-center gap-3 text-sm">
-        <label htmlFor="srv-region" className="w-28 shrink-0 whitespace-nowrap">
+      <div className="grid gap-1 text-sm sm:flex sm:items-center sm:gap-3">
+        <label htmlFor="srv-region" className="text-sm sm:w-28 sm:shrink-0 whitespace-nowrap">
           Región
         </label>
         <select
           id="srv-region"
           value={region}
           onChange={e => setRegion(e.target.value)}
-          className="flex-1 min-w-0 rounded-md border border-slate-300 px-3 py-2 bg-white
+          className="w-full flex-1 min-w-0 rounded-md border border-slate-300 px-3 py-2 bg-white
                      focus:outline-none focus:ring-2 focus:ring-green-500/60 focus:border-green-500"
         >
           <option value="us-east-1">US East (N. Virginia)</option>
@@ -63,15 +62,15 @@ export const ServerForm: React.FC<Props> = ({ onCreate }) => {
       </div>
 
       {/* Versión */}
-      <div className="flex items-center gap-3 text-sm">
-        <label htmlFor="srv-version" className="w-28 shrink-0 whitespace-nowrap">
+      <div className="grid gap-1 text-sm sm:flex sm:items-center sm:gap-3">
+        <label htmlFor="srv-version" className="text-sm sm:w-28 sm:shrink-0 whitespace-nowrap">
           Versión
         </label>
         <select
           id="srv-version"
           value={version}
           onChange={e => setVersion(e.target.value)}
-          className="flex-1 min-w-0 rounded-md border border-slate-300 px-3 py-2 bg-white
+          className="w-full flex-1 min-w-0 rounded-md border border-slate-300 px-3 py-2 bg-white
                      focus:outline-none focus:ring-2 focus:ring-green-500/60 focus:border-green-500"
         >
           <option value="1.21">1.21</option>
@@ -101,5 +100,4 @@ export const ServerForm: React.FC<Props> = ({ onCreate }) => {
       </div>
     </form>
   );
-
 };
