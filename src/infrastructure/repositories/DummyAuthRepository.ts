@@ -1,4 +1,3 @@
-// src/infrastructure/repositories/DummyAuthRepository.ts
 import type { User } from '@domain/entities/User';
 import type { AuthRepository } from '@domain/repositories/AuthRepository';
 
@@ -11,6 +10,7 @@ export class DummyAuthRepository implements AuthRepository {
       id: 'user_FAKE_' + Math.random().toString(36).slice(2, 7),
       name: 'Santiago Pereira',
       email: email || 'santipereira1987@gmail.com',
+      credits: 10000
     };
     const token = 'FAKE_' + Math.random().toString(36).slice(2, 10); // crudo, sin "Bearer "
     return { token, user }; // la UI ignorará este user y llamará a me()
@@ -22,6 +22,7 @@ export class DummyAuthRepository implements AuthRepository {
       id: 'user_FAKE_STATIC',
       name: 'Santiago Pereira',
       email: 'santipereira1987@gmail.com',
+      credits: 10000
     };
   }
 

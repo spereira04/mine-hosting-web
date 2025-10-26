@@ -1,14 +1,7 @@
 // src/presentation/pages/StorePage.tsx
 import React from 'react';
 import { Layout } from '@presentation/components/Layout';
-
-type Product = {
-  id: string;
-  credits: number;
-  badge?: string;
-  accent?: 'emerald' | 'sky' | 'amber';
-  features: string[];
-};
+import Product from '@domain/entities/Purchase';
 
 type Props = {
   onPurchase?: (productId: string) => void; // optional callback to integrate your checkout

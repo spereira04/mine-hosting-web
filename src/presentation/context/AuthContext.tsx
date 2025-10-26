@@ -52,11 +52,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // util para normalizar si te viene "Bearer ..."
   const normalizeToken = (t: string) => (t?.startsWith('Bearer ') ? t.slice(7) : t);
 
-  // ... dentro del AuthProvider:
-
   const logout = () => {
     localStorage.removeItem('token');
-    dispatch({ type: 'LOGOUT' }); // <-- reducer pone loading:false
+    dispatch({ type: 'LOGOUT' });
   };
 
   useEffect(() => {
@@ -79,7 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     (async () => {
       dispatch({ type: 'SET_LOADING', payload: true }); // por si venías en false
       try {
-        const user = await authRepo.me(); // Dummy devuelve uno inventado
+        const user = await authRepo.me();
         dispatch({ type: 'LOGIN', payload: { user, token: normalizeToken(token) } }); // loading:false
       } catch (e) {
         // aseguro que el spinner se apague ante error:
