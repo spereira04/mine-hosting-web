@@ -23,8 +23,16 @@ export class DummyServerRepository implements ServerRepository {
   }
 
   async list(): Promise<Server[]> {
-    await sleep(400);
-    return new Promise(servers);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const success = true;
+        if (success) {
+          resolve(servers);
+        } else {
+          reject(null)
+        }
+      }, 1000);
+    });
   }
 
   async getById(id: ServerId): Promise<Server> {
