@@ -1,9 +1,9 @@
-import type { NewServer, Server, ServerId } from '@domain/entities/Server';
-import type { Region } from '@domain/entities/Region';
+import type { Server, ServerId } from '@domain/entities/Server';
+import type { ServerResources } from '@domain/entities/ServerResources';
 
 export interface ServerRepository {
-  create(server: NewServer): Promise<Server>;
-  list(): Promise<Server[]>;
+  create(input: { name: string; region: string; version: string, type: string }): Promise<Server>;
+  list(): Promise<Server>;
   getById(id: ServerId): Promise<Server>;
-  getRegions(): Promise<Region[]>;
+  getServerResources(): Promise<ServerResources>;
 }

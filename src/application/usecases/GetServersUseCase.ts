@@ -4,6 +4,11 @@ import type { Server } from '@domain/entities/Server';
 export class GetServersUseCase {
   constructor(private repo: ServerRepository) {}
   async execute(): Promise<Server[]> {
-    return this.repo.list();
+    return this.repo.list().then((data: Server) => {
+        return [data];
+      })
+      .catch((error: Error) => {
+        return []; 
+      });
   }
 }

@@ -1,25 +1,26 @@
 // src/presentation/components/ServerForm.tsx
 import React, { useState } from 'react';
-import type { NewServer } from '@domain/entities/Server';
+import { ServerResources } from '@domain/entities/ServerResources';
 
 type Props = {
-  onCreate: (input: { name: string; region: string; version: string }) => Promise<void> | void;
-  regions: Region[];
-  regionsLoading?: boolean;
-  regionsError?: string | null;
+  onCreate: (input: { name: string; region: string; version: string, type: string }) => Promise<void> | void;
+  serverResources: ServerResources;
+  resourcesLoading?: boolean;
+  resourcesError?: string | null;
   onRetryRegions?: () => void;
 };
 
 export const ServerForm: React.FC<Props> = ({ 
   onCreate,
-  regions,
-  regionsLoading,
-  regionsError,
+  serverResources,
+  resourcesLoading,
+  resourcesError,
   onRetryRegions
 }) => {
   const [name, setName] = useState('');
   const [region, setRegion] = useState('');
-  const [version, setVersion] = useState('1.21');
+  const [version, setVersion] = useState('');
+  const [type, setType] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,10 +29,11 @@ export const ServerForm: React.FC<Props> = ({
     setSubmitting(true);
     setError(null);
     try {
-      await onCreate({ name, region, version });
+      await onCreate({ name, region, version, type });
       setName('');
       setRegion('');
-      setVersion('1.21');
+      setVersion('');
+      setType('');
     } catch (err: any) {
       setError(err?.message ?? 'Error al crear servidor');
     } finally {
@@ -57,36 +59,16 @@ export const ServerForm: React.FC<Props> = ({
         />
       </div>
 
-      {/* Región */}
-{/*      <div className="grid gap-1 text-sm sm:flex sm:items-center sm:gap-3">
-        <label htmlFor="srv-region" className="text-sm sm:w-28 sm:shrink-0 whitespace-nowrap">
-          Región
-        </label>
-        <select
-          id="srv-region"
-          value={region}
-          onChange={e => setRegion(e.target.value)}
-          className="w-full flex-1 min-w-0 rounded-md border border-slate-300 px-3 py-2 bg-white
-                     focus:outline-none focus:ring-2 focus:ring-green-500/60 focus:border-green-500"
-        >
-          <option value="us-east-1">US East (N. Virginia)</option>
-          <option value="sa-east-1">South America (São Paulo)</option>
-          <option value="eu-west-1">EU (Ireland)</option>
-        </select>
-      </div>*/}
-
-
-
       <div className="grid gap-1 text-sm sm:flex sm:items-center sm:gap-3">
         <label htmlFor="srv-region" className="text-sm sm:w-28 sm:shrink-0 whitespace-nowrap">
           Región
         </label>
 
-        {regionsLoading ? (
+        {resourcesLoading ? (
           <div className="h-10 w-full animate-pulse rounded-md bg-slate-200" />
-        ) : regionsError ? (
+        ) : resourcesError ? (
           <div className="flex items-center gap-3">
-            <span className="text-red-600 text-sm">{regionsError}</span>
+            <span className="text-red-600 text-sm">{resourcesError}</span>
             {onRetryRegions && (
               <button
                 type="button"
@@ -106,34 +88,56 @@ export const ServerForm: React.FC<Props> = ({
                      focus:outline-none focus:ring-2 focus:ring-green-500/60 focus:border-green-500"
           >
             <option value="" disabled>Elegí una región…</option>
-            {regions.map(r => (
+            {serverResources.regions.map(r => (
               <option key={r.id} value={r.id}>{r.name}</option>
             ))}
           </select>
         )}
       </div>
 
-
-
-
-
-
       {/* Versión */}
       <div className="grid gap-1 text-sm sm:flex sm:items-center sm:gap-3">
         <label htmlFor="srv-version" className="text-sm sm:w-28 sm:shrink-0 whitespace-nowrap">
           Versión
         </label>
+        {resourcesLoading ? (
+          <div className="h-10 w-full animate-pulse rounded-md bg-slate-200" />
+        ) :
         <select
           id="srv-version"
           value={version}
           onChange={e => setVersion(e.target.value)}
+          required
           className="w-full flex-1 min-w-0 rounded-md border border-slate-300 px-3 py-2 bg-white
                      focus:outline-none focus:ring-2 focus:ring-green-500/60 focus:border-green-500"
         >
-          <option value="1.21">1.21</option>
-          <option value="1.20.6">1.20.6</option>
-          <option value="1.19.4">1.19.4</option>
-        </select>
+          <option value="" disabled>Elegí una versión</option>
+            {serverResources.versions.map(v => (
+              <option key={v.id} value={v.id}>{v.label}</option>
+            ))}
+        </select>}
+      </div>
+
+      <div className="grid gap-1 text-sm sm:flex sm:items-center sm:gap-3">
+        <label htmlFor="srv-version" className="text-sm sm:w-28 sm:shrink-0 whitespace-nowrap">
+          Tamaño
+        </label>
+        {resourcesLoading ? (
+          <div className="h-10 w-full animate-pulse rounded-md bg-slate-200" />
+        ):
+        <select
+          id="srv-type"
+          value={type}
+          onChange={e => setType(e.target.value)}
+          required
+          className="w-full flex-1 min-w-0 rounded-md border border-slate-300 px-3 py-2 bg-white
+                     focus:outline-none focus:ring-2 focus:ring-green-500/60 focus:border-green-500"
+        >
+          <option value="" disabled>Elegí un tamaño</option>
+            {serverResources.types.map(t => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+        </select>}
       </div>
 
       {/* Error */}

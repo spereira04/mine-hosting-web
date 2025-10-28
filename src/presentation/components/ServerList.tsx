@@ -4,9 +4,8 @@ import type { Server } from '@domain/entities/Server';
 
 const badge: Record<Server['status'], string> = {
   RUNNING: 'border border-emerald-200 bg-emerald-50 text-emerald-700',
-  CREATING: 'border border-amber-200 bg-amber-50 text-amber-700',
+  CREATING: 'bddorder border-amber-200 bg-amber-50 text-amber-700',
   STOPPED: 'border border-slate-200 bg-slate-100 text-slate-700',
-  ERROR: 'border border-red-200 bg-red-50 text-red-700',
 };
 
 export const ServerList: React.FC<{ servers: Server[] }> = ({ servers }) => {
@@ -24,8 +23,8 @@ export const ServerList: React.FC<{ servers: Server[] }> = ({ servers }) => {
           </div>
 
           <div className="mt-2 text-xs sm:text-sm text-slate-600 flex flex-wrap gap-x-3 gap-y-1">
-            <span className="whitespace-nowrap">Región: {s.region}</span>
-            <span className="whitespace-nowrap">Versión: {s.version}</span>
+            <span className="whitespace-nowrap">Región: {s.region.name}</span>
+            <span className="whitespace-nowrap">Versión: {s.version.label}</span>
             <span className="whitespace-nowrap">IP: {s.ip ?? '—'}</span>
             <span className="whitespace-nowrap">
               Creado: {new Date(s.createdAt).toLocaleString()}
