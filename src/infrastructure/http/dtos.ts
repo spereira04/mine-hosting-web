@@ -4,8 +4,9 @@ export type ServerDTO = {
   region: string;   // 👈 embed del backend
   version: string; 
   status: string;
+  type: string;
   ip?: string;
-  createdAt: number;
+  createdAt: string;
 };
 
 export type RegionDTO = { id: string; name: string };

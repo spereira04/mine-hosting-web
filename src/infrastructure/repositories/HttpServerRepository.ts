@@ -1,6 +1,5 @@
 import type { ServerRepository } from '@domain/repositories/ServerRepository';
 import type { Server, ServerId } from '@domain/entities/Server';
-import type { Region } from '@domain/entities/Region';
 import { api } from '@infrastructure/http/axiosClient';
 import { toDomainServer, toDomainRegion, toDomainVersion, toCreateServerRequestDTO } from '../mappers/serverMapper';
 import type { ServerDTO, RegionDTO, VersionDTO, CreateServerRequestDTO } from '../http/dtos';

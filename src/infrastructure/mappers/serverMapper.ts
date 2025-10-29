@@ -19,6 +19,7 @@ export const toDomainServer = (dto: ServerDTO): Server => ({
   name: dto.name,
   region:  { id: dto.region, name: regionNames.get(dto.region)!},
   version: { id: dto.version, label: dto.version },
+  type:  { id: dto.type, name: typeNames.get(dto.type)! },
   status: dto.status,
   ip: dto.ip,
   createdAt: dto.createdAt
