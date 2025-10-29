@@ -1,5 +1,5 @@
 
-export interface Product = {
+export interface Product {
   id: string;
   credits: number;
   badge?: string;
