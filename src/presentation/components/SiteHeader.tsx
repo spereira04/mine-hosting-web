@@ -62,8 +62,8 @@ export default function SiteHeader() {
 
               <span
                 className="inline-flex items-center gap-1 rounded-full bg-amber-50 text-amber-800 ring-1 ring-amber-200 px-2.5 py-1 text-xs font-semibold select-none"
-                title={`${formatCredits(user?.credits)} créditos`}
-                aria-label={`Créditos disponibles: ${formatCredits(user?.credits)}`}
+                title={`${formatCredits(user?.credits!)} créditos`}
+                aria-label={`Créditos disponibles: ${formatCredits(user?.credits!)}`}
               >
                 <img 
                   src="dollar.png"
@@ -71,7 +71,7 @@ export default function SiteHeader() {
                   className="h-6 w-6 object-cover select-none pointer-events-none"
                   draggable={false}
                 />
-                <span>{formatCredits(user?.credits)}</span>
+                <span>{formatCredits(user?.credits!)}</span>
               </span>
 
               <button
@@ -97,8 +97,8 @@ export default function SiteHeader() {
             <div>
               <span
                 className="inline-flex items-center gap-1 rounded-full bg-amber-50 text-amber-800 ring-1 ring-amber-200 px-2.5 py-1 text-xs font-semibold select-none"
-                title={`${formatCredits(user?.credits)} créditos`}
-                aria-label={`Créditos disponibles: ${formatCredits(user?.credits)}`}
+                title={`${formatCredits(user?.credits!)} créditos`}
+                aria-label={`Créditos disponibles: ${formatCredits(user?.credits!)}`}
               >
                 <img 
                   src="dollar.png"
@@ -106,7 +106,7 @@ export default function SiteHeader() {
                   className="h-6 w-6 object-cover select-none pointer-events-none"
                   draggable={false}
                 />
-                <span>{formatCredits(user?.credits)}</span>
+                <span>{formatCredits(user?.credits!)}</span>
               </span>
               <button
                 aria-label="Abrir menú"

@@ -1,7 +1,7 @@
 // src/presentation/pages/StorePage.tsx
 import React from 'react';
 import { Layout } from '@presentation/components/Layout';
-import Product from '@domain/entities/Purchase';
+import { Product } from '@domain/entities/Purchase';
 
 type Props = {
   onPurchase?: (productId: string) => void; // optional callback to integrate your checkout
@@ -106,7 +106,7 @@ export const StorePage: React.FC<Props> = ({ onPurchase }) => {
               </header>
 
               <ul className="mt-4 space-y-2 text-sm text-slate-700">
-                {p.features.map((f, idx) => (
+                {p.features.map((f: string, idx: number) => (
                   <li key={idx} className="flex items-start gap-2">
                     <svg
                       aria-hidden

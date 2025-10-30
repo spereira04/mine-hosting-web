@@ -6,6 +6,8 @@ export class DummyPurchaseRepository implements PurchaseRepository {
 
   async purchase(): Promise<void> {
     await sleep(400);
-    return new Promise();
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
   }
 }

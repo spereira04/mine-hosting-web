@@ -107,7 +107,7 @@ const DashboardPage: React.FC = () => {
             <h3 className="text-lg font-semibold mb-3">Crear nuevo servidor</h3>
             <ServerForm
               onCreate={handleCreate}
-              serverResources={serverResources}
+              serverResources={serverResources!}
               resourcesLoading={resourcesLoading}
               resourcesError={resourcesError}
               onRetryRegions={loadResources}
