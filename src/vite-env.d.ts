@@ -1,6 +1,8 @@
 interface ImportMetaEnv {
   readonly VITE_API_URL: string
-  // add more VITE_ vars here if you have them
+  readonly VITE_AWS_REGION: string
+  readonly VITE_COGNITO_USER_POOL_ID: string
+  readonly VITE_COGNITO_WEB_CLIENT_ID: string
 }
 
 interface ImportMeta {

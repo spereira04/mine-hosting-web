@@ -17,7 +17,7 @@ const SignUpPage: React.FC = () => {
       setLoading(true);
       setError(null);
       await signup(name, email, password);
-      nav('/auth/login');
+      nav(`/auth/confirm?email=${encodeURIComponent(email)}`);
     } catch (err: any) {
       setError(err?.message ?? 'Error al crear la cuenta');
     } finally {

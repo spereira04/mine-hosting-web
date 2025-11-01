@@ -1,33 +1,28 @@
-import type { User } from '@domain/entities/User';
+// src/infrastructure/repositories/DummyAuthRepository.ts
 import type { AuthRepository } from '@domain/repositories/AuthRepository';
-
-const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
+import type { User } from '@domain/entities/User';
 
 export class DummyAuthRepository implements AuthRepository {
-  async login(email: string, _password: string): Promise<{ token: string; user: User }> {
-    await sleep(200);
-    const user: User = {
-      id: 'user_FAKE_' + Math.random().toString(36).slice(2, 7),
-      name: 'Santiago Pereira',
-      email: email || 'santipereira1987@gmail.com',
-      credits: 10000
-    };
-    const token = 'FAKE_' + Math.random().toString(36).slice(2, 10); // crudo, sin "Bearer "
-    return { token, user }; // la UI ignorará este user y llamará a me()
+  private _user: User | null = null;
+
+  async login(email: string, _password: string) {
+    this._user = { id: 'dummy', name: 'Santiago', email, credits: 2500 };
+    return { token: 'Bearer dummy-token', user: this._user };
   }
 
-  async me(): Promise<User> {
-    await sleep(150);
-    return {
-      id: 'user_FAKE_STATIC',
-      name: 'Santiago Pereira',
-      email: 'santipereira1987@gmail.com',
-      credits: 10000
-    };
-  }
-
-  async signup(name: string, email: string, _password: string): Promise<void> {
-    await sleep(250);
+  async signup(name: string, email: string, _password: string) {
+    // pretend the user must confirm via code sent by email
     return;
   }
+
+  async confirmSignup(_email: string, _code: string) { return; }
+  async resendSignupCode(_email: string) { return; }
+
+  async me(): Promise<User> {
+    if (!this._user) throw new Error('Not authenticated');
+    return this._user;
+  }
+
+  async getToken(): Promise<string | null> { return 'Bearer dummy-token'; }
+  async logout(): Promise<void> { this._user = null; }
 }

@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
 import type { User } from '@domain/entities/User';
-import { HttpAuthRepository } from '@infrastructure/repositories/HttpAuthRepository';
 import { DummyAuthRepository } from '@infrastructure/repositories/DummyAuthRepository';
 import { LoginUseCase } from '@application/usecases/LoginUseCase';
 import { SignUpUseCase } from '@application/usecases/SignUpUseCase';
 import { api } from '@infrastructure/http/axiosClient';
 import { setupInterceptors } from '@infrastructure/http/interceptors';
+import { CognitoAuthRepository } from '@infrastructure/repositories/CognitoAuthRepository';
 
 type State = {
   user: User | null;
@@ -37,12 +37,14 @@ type ContextType = {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
+  confirmSignup: (email: string, code: string) => Promise<void>;     // NEW
+  resendSignupCode: (email: string) => Promise<void>;                // NEW
   logout: () => void;
 }
 
 const AuthContext = createContext<ContextType | undefined>(undefined);
 
-const authRepo = new DummyAuthRepository(); 
+const authRepo = new CognitoAuthRepository(); 
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, { user: null, token: null, loading: true });
@@ -108,7 +110,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const usecase = new SignUpUseCase(authRepo);
       await usecase.execute(name, email, password);
     },
-    logout
+    logout,
+    confirmSignup: async (email: string, code: string) => {
+      await authRepo.confirmSignup(email, code);
+    },
+    resendSignupCode: async (email: string) => {
+      await authRepo.resendSignupCode(email);
+    }
   }), [state.user, state.token, state.loading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
