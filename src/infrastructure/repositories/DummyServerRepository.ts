@@ -13,11 +13,11 @@ const regions: Region[] = [{id: 'us-east-1', name: 'US NORTH'}, {id: 'sa-east-1'
 const servers: Server[] = [];
 
 export class DummyServerRepository implements ServerRepository {
-  async create(input: { name: string; region: string; version: string, type: string }): Promise<Server> {
+  async create(input: { serverName: string; region: string; version: string, type: string }): Promise<Server> {
     await sleep(400);
     const serverCreation: Server = {
       id: '_id',
-      name: input.name,
+      name: input.serverName,
       region: { id: input.region, name: input.region},
       version: { id: input.version, label: input.version },
       status: 'CREATING',
@@ -76,5 +76,10 @@ export class DummyServerRepository implements ServerRepository {
       }, 1000);
     });
   }
+
+
+  async stop(id: string): Promise<void> {}
+
+  async delete(id: string): Promise<void> {}
 
 }

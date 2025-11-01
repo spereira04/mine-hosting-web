@@ -1,9 +1,10 @@
 // src/presentation/components/ServerForm.tsx
 import React, { useState } from 'react';
 import { ServerResources } from '@domain/entities/ServerResources';
+import { useAuth } from '@presentation/context/AuthContext';
 
 type Props = {
-  onCreate: (input: { name: string; region: string; version: string, type: string }) => Promise<void> | void;
+  onCreate: (input: { serverName: string; region: string; version: string, type: string, owner: string }) => Promise<void> | void;
   serverResources: ServerResources;
   resourcesLoading?: boolean;
   resourcesError?: string | null;
@@ -17,20 +18,22 @@ export const ServerForm: React.FC<Props> = ({
   resourcesError,
   onRetryRegions
 }) => {
-  const [name, setName] = useState('');
+  const [serverName, setServerName] = useState('');
   const [region, setRegion] = useState('');
   const [version, setVersion] = useState('');
   const [type, setType] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { user } = useAuth();
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
     try {
-      await onCreate({ name, region, version, type });
-      setName('');
+      await onCreate({ serverName, region, version, type, owner: user!.email});
+      setServerName('');
       setRegion('');
       setVersion('');
       setType('');
@@ -50,8 +53,8 @@ export const ServerForm: React.FC<Props> = ({
         </label>
         <input
           id="srv-name"
-          value={name}
-          onChange={e => setName(e.target.value)}
+          value={serverName}
+          onChange={e => setServerName(e.target.value)}
           placeholder="Mi servidor"
           required
           className="w-full flex-1 min-w-0 rounded-md border border-slate-300 px-3 py-2 bg-white

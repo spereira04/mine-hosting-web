@@ -11,7 +11,7 @@ import { CreateServerUseCase } from '@application/usecases/CreateServerUseCase';
 import { GetServerResourcesUseCase } from '@application/usecases/GetServerResourcesUseCase';
 import { GetServersUseCase } from '@application/usecases/GetServersUseCase';
 
-const serverRepo = new DummyServerRepository();
+const serverRepo = new HttpServerRepository();
 
 const DashboardPage: React.FC = () => {
   const [servers, setServers] = useState<Server[]>([]);
@@ -50,7 +50,7 @@ const DashboardPage: React.FC = () => {
     }
   }, []);
 
-  async function handleCreate(input: { name: string; region: string; version: string, type: string }) {
+  async function handleCreate(input: { serverName: string; region: string; version: string, type: string, owner: string }) {
     const usecase = new CreateServerUseCase(serverRepo);
     const created = await usecase.execute(input);
     setServers(prev => [created, ...prev]);
