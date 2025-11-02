@@ -11,7 +11,7 @@ import { Type } from '@domain/entities/Type';
 import { Version } from '@domain/entities/Version';
 
 const types: Type[] = [{id: 't2.small', name: 'Chico (2-4 jugadores)'}, {id: 't2.medium', name: 'Mediano (5-10 jugadores)'}, {id: 't2.large', name: 'Grande (11-20   jugadores)'}];
-const versions: Version[] = [{id: '1.24', label: '1.24'}, {id: '1.21', label: '1.21'}, {id: '1.20', label: '1.20'}];
+const versions: Version[] = [{id: '1.24', label: '1.24'}, {id: '1.21.10', label: '1.21.10'}, {id: '1.20', label: '1.20'}];
 const regions: Region[] = [{id: 'us-east-1', name: 'US NORTH'}, {id: 'sa-east-1', name: 'SA EAST'}, {id: 'eu-west-1', name: 'EU WEST'}];
 
 const typesMap: Map<string, string> = new Map<string, string>([
@@ -31,7 +31,7 @@ export class HttpServerRepository implements ServerRepository {
     input.region = regionsMap.get(input.region) || input.region;
     input.type = typesMap.get(input.type) || input.type;
     const body = {payload: input, operation: "CREATE"}
-    const { data } = await api.post('/serversActions', body);
+    const { data } = await api.post('/serverAction', body);
     console.log(body);
     return data;
   }
