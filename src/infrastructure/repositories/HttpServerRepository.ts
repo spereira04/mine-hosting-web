@@ -30,7 +30,7 @@ export class HttpServerRepository implements ServerRepository {
   async create(input: { serverName: string; region: string; version: string, type: string, owner: string }): Promise<Server> {
     input.region = regionsMap.get(input.region) || input.region;
     input.type = typesMap.get(input.type) || input.type;
-    const body = {payload: input, operation: "CREATE"}
+    const body = {...input, operation: "CREATE"}
     const { data } = await api.post('/serverAction', body);
     console.log(body);
     return data;
