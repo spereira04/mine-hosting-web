@@ -6,7 +6,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -17,20 +16,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
-      - run: npm run build
 
-      # Auth via OIDC (recommended). If you prefer access keys, swap this step.
+      - run: npm ci
+
+      # Option A: inject build-time env directly
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_AWS_REGION: ${{ secrets.VITE_AWS_REGION }}
+          VITE_COGNITO_USER_POOL_ID: ${{ secrets.VITE_COGNITO_USER_POOL_ID }}
+          VITE_COGNITO_WEB_CLIENT_ID: ${{ secrets.VITE_COGNITO_WEB_CLIENT_ID }}
+
+      # Auth via access keys
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Upload to S3
         run: aws s3 sync dist "s3://$S3_BUCKET" --delete --no-progress
+        # If using CRA:
+        # run: aws s3 sync build "s3://$S3_BUCKET" --delete --no-progress
