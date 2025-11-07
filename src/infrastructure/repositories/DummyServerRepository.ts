@@ -28,7 +28,7 @@ export class DummyServerRepository implements ServerRepository {
     return serverCreation;
   }
 
-  async list(): Promise<Server> {
+  async list(owner: string): Promise<Server> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         const success = servers.length > 0;

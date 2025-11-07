@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '@presentation/context/AuthContext';
+import { CognitoAuthRepository } from '@infrastructure/repositories/CognitoAuthRepository';
 
 export default function SiteHeader() {
   const { user, token, loading, logout } = useAuth();

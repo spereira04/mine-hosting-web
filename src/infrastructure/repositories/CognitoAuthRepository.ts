@@ -12,8 +12,10 @@ import {
   type UserAttributeKey,
 } from 'aws-amplify/auth';
 
+import { api } from '@infrastructure/http/axiosClient';
 import type { AuthRepository } from '@domain/repositories/AuthRepository';
 import type { User } from '@domain/entities/User';
+import { ServerDTO } from '@infrastructure/http/dtos';
 
 let _configured = false;
 export function initCognitoAuth() {
@@ -52,7 +54,9 @@ export class CognitoAuthRepository implements AuthRepository {
   constructor() { initCognitoAuth(); }
 
   async login(email: string, password: string) {
+    console.log("Calling login inside repo");
     await signIn({ username: email, password });
+    console.log("Made login call inside repo");
     const [session, current] = await Promise.all([fetchAuthSession(), getCurrentUser()]);
     const attrs = await fetchUserAttributes();
     const user = mapAttributesToUser(attrs, current.username);
@@ -80,10 +84,20 @@ export class CognitoAuthRepository implements AuthRepository {
     await resendSignUpCode({ username: email });
   }
 
-  async me(): Promise<User> {
+  async me(owner: string): Promise<User> {
     const current = await getCurrentUser();
     const attrs = await fetchUserAttributes();
-    return mapAttributesToUser(attrs, current.username);
+    let user = mapAttributesToUser(attrs, current.username);
+
+    const { data } = await api.get<{Name: string, Credits: number}>(`/me`, {
+      params: {
+        owner: owner
+      }
+    });
+    user = {...user, credits: data.Credits, name: data.Name};
+    console.log(user);
+
+    return user;
   }
 
   async getToken(): Promise<string | null> {

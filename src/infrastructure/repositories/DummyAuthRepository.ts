@@ -18,11 +18,12 @@ export class DummyAuthRepository implements AuthRepository {
   async confirmSignup(_email: string, _code: string) { return; }
   async resendSignupCode(_email: string) { return; }
 
-  async me(): Promise<User> {
+  async me(owner: string): Promise<User> {
     if (!this._user) throw new Error('Not authenticated');
     return this._user;
   }
 
   async getToken(): Promise<string | null> { return 'Bearer dummy-token'; }
   async logout(): Promise<void> { this._user = null; }
+
 }

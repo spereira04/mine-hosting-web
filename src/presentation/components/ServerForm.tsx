@@ -4,7 +4,7 @@ import { ServerResources } from '@domain/entities/ServerResources';
 import { useAuth } from '@presentation/context/AuthContext';
 
 type Props = {
-  onCreate: (input: { serverName: string; region: string; version: string, type: string, owner: string }) => Promise<void> | void;
+  onCreate: (input: { serverName: string; region: string; version: string, type: string }) => Promise<void> | void;
   serverResources: ServerResources;
   resourcesLoading?: boolean;
   resourcesError?: string | null;
@@ -25,14 +25,12 @@ export const ServerForm: React.FC<Props> = ({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { user } = useAuth();
-
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
     try {
-      await onCreate({ serverName, region, version, type, owner: user!.email});
+      await onCreate({ serverName, region, version, type });
       setServerName('');
       setRegion('');
       setVersion('');

@@ -30,14 +30,23 @@ export class HttpServerRepository implements ServerRepository {
   async create(input: { serverName: string; region: string; version: string, type: string, owner: string }): Promise<Server> {
     input.region = regionsMap.get(input.region) || input.region;
     input.type = typesMap.get(input.type) || input.type;
-    const body = {...input, operation: "CREATE"}
+    const body = {
+      serverName: input.serverName, 
+      serverVersion: input.version, 
+      serverType: input.type, 
+      serverRegion: input.region,
+      owner: input.owner,
+      operation: "CREATE"}
     const { data } = await api.post('/serverAction', body);
-    console.log(body);
     return data;
   }
 
-  async list(): Promise<Server> {
-    const { data } = await api.get<ServerDTO>('/servers');
+  async list(owner: string): Promise<Server> {
+    const { data } = await api.get<ServerDTO>('/serverStatus', {
+      params: {
+        owner: owner
+      }
+    });
     try {
       return toDomainServer(data);
     } catch(err) {
@@ -46,22 +55,29 @@ export class HttpServerRepository implements ServerRepository {
   }
 
   async getById(id: ServerId): Promise<Server> {
-    const { data } = await api.get<ServerDTO>(`/servers/${id}`);
+    const { data } = await api.get<ServerDTO>(`/servers/${id}`, {
+      params: {
+
+      }
+    });
     return toDomainServer(data);
   }
 
   async getServerResources(): Promise<ServerResources> {
-    let serverResources: ServerResources = {regions: regions, versions: versions, types: types};
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const success = true;
-        if (success) {
-          resolve(serverResources);
-        } else {
-          reject(null);
-        }
-      }, 1000);
-    });
+    // let serverResources: ServerResources = {regions: regions, versions: versions, types: types};
+    // return new Promise((resolve, reject) => {
+    //   setTimeout(() => {
+    //     const success = true;
+    //     if (success) {
+    //       resolve(serverResources);
+    //     } else {
+    //       reject(null);
+    //     }
+    //   }, 1000);
+    // });
+
+    const { data } = await api.get<ServerResources>(`/resources`);
+    return data;
   } 
 
 

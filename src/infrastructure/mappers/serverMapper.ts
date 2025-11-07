@@ -3,26 +3,16 @@ import type { Server } from '@domain/entities/Server';
 import type { Region } from '@domain/entities/Region';
 import type { Version } from '@domain/entities/Version';
 
-//Implement maps for region, version and type
-
-const regionNames = new Map<string, string>([
-  ['a', ''],
-  ['b', ''],
-]);
-
-const typeNames = new Map<string, string>([
-
-]);
 
 export const toDomainServer = (dto: ServerDTO): Server => ({
-  id: dto.id,
-  name: dto.name,
-  region:  { id: dto.region, name: regionNames.get(dto.region)!},
-  version: { id: dto.version, label: dto.version },
-  type:  { id: dto.type, name: typeNames.get(dto.type)! },
+  id: dto.InstanceId,
+  name: dto.ServerName,
+  region:  { id: dto.Region, name: dto.Region},
+  version: { id: dto.ServerVersion, label: dto.ServerVersion },
+  type:  { id: dto.type, name: dto.type },
   status: dto.status,
-  ip: dto.ip,
-  createdAt: dto.createdAt
+  ip: dto.PublicIp,
+  createdAt: dto.LaunchedAt
 });
 
 export const toDomainRegion = (dto: RegionDTO): Region => ({

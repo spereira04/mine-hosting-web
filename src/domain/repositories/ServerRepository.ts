@@ -3,7 +3,7 @@ import type { ServerResources } from '@domain/entities/ServerResources';
 
 export interface ServerRepository {
   create(input: { serverName: string; region: string; version: string, type: string, owner: string }): Promise<Server>;
-  list(): Promise<Server>;
+  list(owner: string): Promise<Server>;
   getById(id: ServerId): Promise<Server>;
   getServerResources(): Promise<ServerResources>;
 

@@ -1,12 +1,12 @@
 export type ServerDTO = {
-  id: string;
-  name: string;
-  region: string;   // 👈 embed del backend
-  version: string; 
+  InstanceId: string;
+  ServerName: string;
+  Region: string;   // 👈 embed del backend
+  ServerVersion: string; 
   status: string;
   type: string;
-  ip?: string;
-  createdAt: string;
+  PublicIp?: string;
+  LaunchedAt: string;
 };
 
 export type RegionDTO = { id: string; name: string };

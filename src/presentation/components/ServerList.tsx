@@ -4,12 +4,14 @@ import type { Server } from '@domain/entities/Server';
 
 const badge: Record<Server['status'], string> = {
   RUNNING: 'border border-emerald-200 bg-emerald-50 text-emerald-700',
-  CREATING: 'bddorder border-amber-200 bg-amber-50 text-amber-700',
-  STOPPED: 'border border-slate-200 bg-slate-100 text-slate-700',
+  CREATING: 'border border-amber-200 bg-amber-50 text-amber-700',
+  OFFLINE: 'border border-slate-200 bg-slate-50 text-slate-700',
+  STARTING: 'border border-blue-200 bg-slate-50 text-blue-700',
+  DELETING: 'border border-red-200 bg-red-50 text-red-700'
 };
 
 export const ServerList: React.FC<{ servers: Server[] }> = ({ servers }) => {
-  if (!servers.length) return <div className="text-sm text-slate-600">No tenés servidores todavía.</div>;
+  if (!servers.length) return <div className="text-sm text-slate-600">No tenés un servidor todavía.</div>;
 
   return (
     <ul className="grid gap-3">
@@ -24,10 +26,10 @@ export const ServerList: React.FC<{ servers: Server[] }> = ({ servers }) => {
 
           <div className="mt-2 text-xs sm:text-sm text-slate-600 flex flex-wrap gap-x-3 gap-y-1">
             <span className="whitespace-nowrap">Región: {s.region.name}</span>
-            <span className="whitespace-nowrap">Versión: {s.version.label}</span>
-            <span className="whitespace-nowrap">IP: {s.ip ?? '—'}</span>
+            {/*<span className="whitespace-nowrap">Versión: {s.version.label}</span>*/}
+            <span className="whitespace-nowrap">IP: { s.ip ? `${s.ip}:25565` : '—' }</span>
             <span className="whitespace-nowrap">
-              Creado: {new Date(s.createdAt).toLocaleString()}
+              Iniciado: {new Date(s.createdAt).toLocaleString()}
             </span>
           </div>
         </li>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, version } from 'react';
 import { Layout } from '@presentation/components/Layout';
 import { ServerForm } from '@presentation/components/ServerForm';
 import { ServerList } from '@presentation/components/ServerList';
@@ -10,6 +10,7 @@ import { DummyServerRepository } from '@infrastructure/repositories/DummyServerR
 import { CreateServerUseCase } from '@application/usecases/CreateServerUseCase';
 import { GetServerResourcesUseCase } from '@application/usecases/GetServerResourcesUseCase';
 import { GetServersUseCase } from '@application/usecases/GetServersUseCase';
+import { useAuth } from '@presentation/context/AuthContext';
 
 const serverRepo = new HttpServerRepository();
 
@@ -22,12 +23,14 @@ const DashboardPage: React.FC = () => {
   const [resourcesLoading, setResourcesLoading] = useState(true);
   const [resourcesError, setResourcesError] = useState<string | null>(null);
 
+  const { user } = useAuth();
+
   const loadServers = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const uc = new GetServersUseCase(serverRepo);
-      const list = await uc.execute();
+      const list = await uc.execute(user!.email);
       setServers(list);
     } catch (err: any) {
       setError(err?.message ?? 'Error al cargar servidores');
@@ -50,10 +53,11 @@ const DashboardPage: React.FC = () => {
     }
   }, []);
 
-  async function handleCreate(input: { serverName: string; region: string; version: string, type: string, owner: string }) {
+  async function handleCreate(input: { serverName: string; region: string; version: string, type: string }) {
     const usecase = new CreateServerUseCase(serverRepo);
-    const created = await usecase.execute(input);
-    setServers(prev => [created, ...prev]);
+    const created = await usecase.execute({...input, owner: user!.email});
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    loadServers();
   }
 
   useEffect(() => { 
@@ -94,7 +98,7 @@ const DashboardPage: React.FC = () => {
           {/* Card: Crear servidor */}
           { servers.length>0 ? (
           <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.10)]">
-            <h3 className="text-lg font-semibold mb-3">Listado</h3>
+            <h3 className="text-lg font-semibold mb-3">Mi servidor</h3>
             { error ? (
               <div className="text-red-600">{error}</div>
             ) : (

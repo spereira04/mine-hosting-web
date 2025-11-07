@@ -56,6 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userEmail');
     dispatch({ type: 'LOGOUT' });
   };
 
@@ -69,7 +70,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     const token = localStorage.getItem('token');
-    if (!token) {
+    const email = localStorage.getItem('userEmail');
+    if (!token || !email) {
       // ⬅️ SIN TOKEN: apagá el spinner
       dispatch({ type: 'SET_LOADING', payload: false });
       return;
@@ -79,7 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     (async () => {
       dispatch({ type: 'SET_LOADING', payload: true }); // por si venías en false
       try {
-        const user = await authRepo.me();
+        const user = await authRepo.me(email);
         dispatch({ type: 'LOGIN', payload: { user, token: normalizeToken(token) } }); // loading:false
       } catch (e) {
         // aseguro que el spinner se apague ante error:
@@ -95,10 +97,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     login: async (email, password) => {
       dispatch({ type: 'SET_LOADING', payload: true }); // ⬅️ prende spinner
       try {
+        console.log("calling login");
         const { token } = await authRepo.login(email, password); // Dummy: token fake
         const raw = normalizeToken(token);
         localStorage.setItem('token', raw);
-        const user = await authRepo.me();
+        localStorage.setItem('userEmail', email); // optional convenience fallback
+
+        const user = await authRepo.me(email);
         dispatch({ type: 'LOGIN', payload: { user, token: raw } }); // ⬅️ apaga spinner
       } catch (e) {
         // si algo falla, apagá spinner y limpiá

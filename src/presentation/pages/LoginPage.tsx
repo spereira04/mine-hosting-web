@@ -11,6 +11,7 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
+    console.log("Submitting");
     e.preventDefault();
     try {
       setLoading(true);
