@@ -83,7 +83,7 @@ const DashboardPage: React.FC = () => {
       const usecase = new CreateServerUseCase(serverRepo);
       const created = await usecase.execute({...input, owner: user!.email});
       setLoading(true);
-      await new Promise(res => setTimeout(res, 3000));
+      await new Promise(res => setTimeout(res, 5000));
       loadPage();
     } catch (e) {
       error(errMsg(e), 'No se pudo crear el servidor');
