@@ -78,10 +78,20 @@ const DashboardPage: React.FC = () => {
     return 'Unexpected error';
   }
 
-  async function handleCreate(input: { serverName: string; regionId: string; versionId: string, typeId: string }) {
+  async function handleCreate(input: { serverName: string; regionId: string; versionId: string, type: Type }) {
+    const required = input.type.creditCost;
+    const available = user?.credits ?? 0;
+
+    if (available < required) {
+      error(`You need ${required} credits. You have ${available}.`);
+      // optionally route to store:
+      // nav('/store');
+      return;
+    }
+
     try {
       const usecase = new CreateServerUseCase(serverRepo);
-      const created = await usecase.execute({...input, owner: user!.email});
+      const created = await usecase.execute({serverName: input.serverName, typeId: input.type.id, regionId: input.regionId, versionId: input.versionId, owner: user!.email});
       setLoading(true);
       await new Promise(res => setTimeout(res, 5000));
       loadPage();

@@ -54,10 +54,50 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const normalizeToken = (t: string) => (t?.startsWith('Bearer ') ? t.slice(7) : t);
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userEmail');
+    localStorage.clear();
     dispatch({ type: 'LOGOUT' });
   };
+
+  useEffect(() => {
+    let alive = true;
+    let timer: number | undefined;
+
+    const REFRESH_MS = 5_000;
+
+    async function tick() {
+      try {
+        if (!alive) return;
+        // pause if tab hidden (optional)
+        if (document.visibilityState === 'hidden') {
+          timer = window.setTimeout(tick, REFRESH_MS);
+          return;
+        }
+
+        const email = localStorage.getItem('userEmail');
+        const token = state.token || localStorage.getItem('token');
+        if (!email || !token) {
+          // no session to refresh
+          return;
+        }
+
+        const user = await authRepo.me(email);
+        // reuse LOGIN to update the user without turning on a spinner
+        dispatch({ type: 'LOGIN', payload: { user, token } });
+      } catch {
+        // swallow or add telemetry; do not logout on transient errors
+      } finally {
+        if (alive) timer = window.setTimeout(tick, REFRESH_MS);
+      }
+    }
+
+    // start loop only if there is a token
+    if (state.token) timer = window.setTimeout(tick, REFRESH_MS);
+
+    return () => {
+      alive = false;
+      if (timer) clearTimeout(timer);
+    };
+  }, [state.token]);
 
   useEffect(() => {
     setupInterceptors(api, {

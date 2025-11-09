@@ -77,20 +77,21 @@ export const ServerList: React.FC<Props> = ({
           return (
             <li key={s.id} className="rounded-xl border border-slate-200 bg-white/90 p-3 sm:p-4">
               <div className="flex items-center justify-between gap-3">
-                <strong className="truncate">{s.name}</strong>
+                <strong className="truncate">{`${s.name}`}</strong>
                 <span className={`text-xs px-2 py-0.5 rounded-full ${badge[s.status]}`}>
                   {s.status}
                 </span>
               </div>
 
+              <strong className="truncate">{s.ip ? `IP: ${s.ip}:25565` : ''}</strong>
+
               <div className="mt-2 text-xs sm:text-sm text-slate-600 flex flex-wrap gap-x-3 gap-y-1">
                 <span className="whitespace-nowrap">Región: {s.region.name}</span>
                 <span className="whitespace-nowrap">Versión: {s.version.label}</span>
-                <span className="whitespace-nowrap">{s.ip ? `IP: ${s.ip}:25565` : ''}</span>
                 <span className="whitespace-nowrap">
                   {s.createdAt ? `Iniciado: ${new Date(s.createdAt).toLocaleString()}` : ''}
                 </span>
-                <span className="whitespace-nowrap">{s.type ? `Instancia: ${s.type.name}` : ''}</span>
+                <span className="whitespace-nowrap">{s.type ? `Tipo: ${s.type.name}` : ''}</span>
               </div>
 
               {/* Acciones o spinner */}

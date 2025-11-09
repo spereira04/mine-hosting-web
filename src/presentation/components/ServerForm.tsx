@@ -7,7 +7,7 @@ import { Version } from '@domain/entities/Version';
 import { Type } from '@domain/entities/Type';
 
 type Props = {
-  onCreate: (input: { serverName: string; regionId: string; versionId: string, typeId: string }) => Promise<void> | void;
+  onCreate: (input: { serverName: string; regionId: string; versionId: string, type: Type }) => Promise<void> | void;
   serverResources: ServerResources;
   resourcesLoading?: boolean;
   resourcesError?: string | null;
@@ -33,7 +33,8 @@ export const ServerForm: React.FC<Props> = ({
     setSubmitting(true);
     setError(null);
     try {
-      await onCreate({ serverName, regionId: region, versionId: version, typeId: type });
+      const selectedType = serverResources.types.find(t => t.id === type);
+      await onCreate({ serverName, regionId: region, versionId: version, type: selectedType! });
       setServerName('');
       setRegion('');
       setVersion('');
@@ -47,7 +48,6 @@ export const ServerForm: React.FC<Props> = ({
 
   return (
     <form onSubmit={submit} className="grid gap-4">
-      {/* Nombre */}
       <div className="grid gap-1 text-sm sm:flex sm:items-center sm:gap-3">
         <label htmlFor="srv-name" className="text-sm sm:w-28 sm:shrink-0 whitespace-nowrap">
           Nombre
