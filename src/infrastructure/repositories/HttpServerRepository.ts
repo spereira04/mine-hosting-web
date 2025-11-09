@@ -10,31 +10,13 @@ import { Region } from '@domain/entities/Region';
 import { Type } from '@domain/entities/Type';
 import { Version } from '@domain/entities/Version';
 
-const types: Type[] = [{id: 't2.small', name: 'Chico (2-4 jugadores)'}, {id: 't2.medium', name: 'Mediano (5-10 jugadores)'}, {id: 't2.large', name: 'Grande (11-20   jugadores)'}];
-const versions: Version[] = [{id: '1.24', label: '1.24'}, {id: '1.21.10', label: '1.21.10'}, {id: '1.20', label: '1.20'}];
-const regions: Region[] = [{id: 'us-east-1', name: 'US NORTH'}, {id: 'sa-east-1', name: 'SA EAST'}, {id: 'eu-west-1', name: 'EU WEST'}];
-
-const typesMap: Map<string, string> = new Map<string, string>([
-  ['Chico (2-4 jugadores)', 't2.small'],
-  ['Mediano (5-10 jugadores)', 't2.medium'],
-  ['Grande (11-20   jugadores)', 't2.large']
-]);
-
-const regionsMap: Map<string, string> = new Map<string, string>([
-  ['US NORTH', 'us-east-1'],
-  ['SA EAST', 'sa-east-1'],
-  ['EU WEST', 'eu-west-1']
-]);
-
 export class HttpServerRepository implements ServerRepository {
-  async create(input: { serverName: string; region: string; version: string, type: string, owner: string }): Promise<Server> {
-    input.region = regionsMap.get(input.region) || input.region;
-    input.type = typesMap.get(input.type) || input.type;
+  async create(input: { serverName: string; regionId: string; versionId: string, typeId: string, owner: string }): Promise<Server> {
     const body = {
       serverName: input.serverName, 
-      serverVersion: input.version, 
-      serverType: input.type, 
-      serverRegion: input.region,
+      serverVersion: input.versionId, 
+      serverType: input.typeId, 
+      serverRegion: input.regionId,
       owner: input.owner,
       operation: "CREATE"}
     const { data } = await api.post('/serverAction', body);
@@ -54,38 +36,33 @@ export class HttpServerRepository implements ServerRepository {
     }
   }
 
-  async getById(id: ServerId): Promise<Server> {
-    const { data } = await api.get<ServerDTO>(`/servers/${id}`, {
-      params: {
-
-      }
-    });
-    return toDomainServer(data);
-  }
-
   async getServerResources(): Promise<ServerResources> {
-    // let serverResources: ServerResources = {regions: regions, versions: versions, types: types};
-    // return new Promise((resolve, reject) => {
-    //   setTimeout(() => {
-    //     const success = true;
-    //     if (success) {
-    //       resolve(serverResources);
-    //     } else {
-    //       reject(null);
-    //     }
-    //   }, 1000);
-    // });
-
     const { data } = await api.get<ServerResources>(`/resources`);
     return data;
   } 
 
 
-  async stop(id: string): Promise<void> {
-
+  async stop(owner: string): Promise<void> {
+    const body = {
+      operation: "TURNOFF",
+      owner: owner
+    };
+    await api.post(`/serverAction`, body);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(owner: string): Promise<void> {
+    const body = {
+      operation: "DELETE",
+      owner: owner
+    }
+    await api.post(`/serverAction`, body);
+  }
 
+  async start(owner: string): Promise<void> {
+    const body = {
+      operation: "TURNON",
+      owner: owner
+    }
+    await api.post(`/serverAction`, body);
   }
 }

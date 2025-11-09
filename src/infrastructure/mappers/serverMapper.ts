@@ -8,8 +8,8 @@ export const toDomainServer = (dto: ServerDTO): Server => ({
   id: dto.InstanceId,
   name: dto.ServerName,
   region:  { id: dto.Region, name: dto.Region},
-  version: { id: dto.ServerVersion, label: dto.ServerVersion },
-  type:  { id: dto.type, name: dto.type },
+  version: { id: dto.Version, label: dto.Version },
+  type:  { id: dto.Type, name: dto.Type, creditCost: 0 },
   status: dto.status,
   ip: dto.PublicIp,
   createdAt: dto.LaunchedAt

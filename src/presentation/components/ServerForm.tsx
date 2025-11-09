@@ -2,9 +2,12 @@
 import React, { useState } from 'react';
 import { ServerResources } from '@domain/entities/ServerResources';
 import { useAuth } from '@presentation/context/AuthContext';
+import { Region } from '@domain/entities/Region';
+import { Version } from '@domain/entities/Version';
+import { Type } from '@domain/entities/Type';
 
 type Props = {
-  onCreate: (input: { serverName: string; region: string; version: string, type: string }) => Promise<void> | void;
+  onCreate: (input: { serverName: string; regionId: string; versionId: string, typeId: string }) => Promise<void> | void;
   serverResources: ServerResources;
   resourcesLoading?: boolean;
   resourcesError?: string | null;
@@ -30,7 +33,7 @@ export const ServerForm: React.FC<Props> = ({
     setSubmitting(true);
     setError(null);
     try {
-      await onCreate({ serverName, region, version, type });
+      await onCreate({ serverName, regionId: region, versionId: version, typeId: type });
       setServerName('');
       setRegion('');
       setVersion('');
@@ -136,7 +139,7 @@ export const ServerForm: React.FC<Props> = ({
         >
           <option value="" disabled>Elegí un tamaño</option>
             {serverResources.types.map(t => (
-              <option key={t.id} value={t.id}>{t.name}</option>
+              <option key={t.id} value={t.id}>{t.name + ' | ' + t.creditCost + ' c/h'}</option>
             ))}
         </select>}
       </div>

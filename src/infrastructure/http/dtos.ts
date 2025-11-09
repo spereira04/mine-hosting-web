@@ -2,9 +2,9 @@ export type ServerDTO = {
   InstanceId: string;
   ServerName: string;
   Region: string;   // 👈 embed del backend
-  ServerVersion: string; 
+  Version: string; 
   status: string;
-  type: string;
+  Type: string;
   PublicIp?: string;
   LaunchedAt: string;
 };

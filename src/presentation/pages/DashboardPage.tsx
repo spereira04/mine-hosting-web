@@ -10,32 +10,47 @@ import { DummyServerRepository } from '@infrastructure/repositories/DummyServerR
 import { CreateServerUseCase } from '@application/usecases/CreateServerUseCase';
 import { GetServerResourcesUseCase } from '@application/usecases/GetServerResourcesUseCase';
 import { GetServersUseCase } from '@application/usecases/GetServersUseCase';
+import { StopServerUseCase } from '@application/usecases/StopServerUseCase';
+import { DeleteServerUseCase } from '@application/usecases/DeleteServerUseCase';
+import { StartServerUseCase } from '@application/usecases/StartServerUseCase';
 import { useAuth } from '@presentation/context/AuthContext';
+import { useToast } from '@presentation/components/ui/ToastProvider';
+import { Version } from '@domain/entities/Version';
+import { Type } from '@domain/entities/Type';
 
 const serverRepo = new HttpServerRepository();
 
 const DashboardPage: React.FC = () => {
   const [servers, setServers] = useState<Server[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [generalError, setGeneralError] = useState<string | null>(null);
 
+  const [serverLoading, setServerLoading] = useState(true);
   const [serverResources, setServerResources] = useState<ServerResources | null>(null);
   const [resourcesLoading, setResourcesLoading] = useState(true);
   const [resourcesError, setResourcesError] = useState<string | null>(null);
 
   const { user } = useAuth();
+  const { success, error } = useToast();
+
+  const loadPage = useCallback(async () => {
+    setLoading(true);
+    await loadServers();
+    await loadResources();
+    setLoading(false);
+  }, []);
 
   const loadServers = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+    setServerLoading(true);
+    setGeneralError(null);
     try {
       const uc = new GetServersUseCase(serverRepo);
       const list = await uc.execute(user!.email);
       setServers(list);
     } catch (err: any) {
-      setError(err?.message ?? 'Error al cargar servidores');
+      setGeneralError(err?.message ?? 'Error al cargar servidores');
     } finally {
-      setLoading(false);
+      setServerLoading(false);
     }
   }, []);
 
@@ -53,17 +68,59 @@ const DashboardPage: React.FC = () => {
     }
   }, []);
 
-  async function handleCreate(input: { serverName: string; region: string; version: string, type: string }) {
-    const usecase = new CreateServerUseCase(serverRepo);
-    const created = await usecase.execute({...input, owner: user!.email});
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    loadServers();
+  useEffect(() => { 
+    loadPage()
+  }, [loadPage]);
+
+  function errMsg(err: unknown): string {
+    if (err instanceof Error && err.message) return err.message;
+    if (typeof err === 'string') return err;
+    return 'Unexpected error';
   }
 
-  useEffect(() => { 
-    loadServers(); 
-    loadResources();
-  }, [loadServers, loadResources]);
+  async function handleCreate(input: { serverName: string; regionId: string; versionId: string, typeId: string }) {
+    try {
+      const usecase = new CreateServerUseCase(serverRepo);
+      const created = await usecase.execute({...input, owner: user!.email});
+      setLoading(true);
+      await new Promise(res => setTimeout(res, 1000));
+      loadPage();
+    } catch (e) {
+      error(errMsg(e), 'No se pudo crear el servidor');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleStop() {
+    try {
+      const uc = new StopServerUseCase(serverRepo);
+      await uc.execute(user!.email);
+      success('Deteniendo servidor', 'OK');
+    } catch (e) {
+      error(errMsg(e), 'No se pudo detener el servidor');
+    }
+  }
+
+  async function handleDelete() {
+    try {
+      const usecase = new DeleteServerUseCase(serverRepo);
+      await usecase.execute(user!.email);
+      success('Borrando servidor', 'OK');
+    } catch (e) {
+      error(errMsg(e), 'No se pudo eliminar el servidor');
+    }
+  }
+
+  async function handleStart() {
+    try {
+      const usecase = new StartServerUseCase(serverRepo);
+      await usecase.execute(user!.email);
+      success('Iniciando servidor', 'OK');
+    } catch (e) {
+      error(errMsg(e), 'No se pudo iniciar el servidor');
+    }
+  }
 
   return (
     <Layout>
@@ -95,14 +152,20 @@ const DashboardPage: React.FC = () => {
         )
         : 
         <div className="grid gap-6 lg:grid-cols-1">
-          {/* Card: Crear servidor */}
           { servers.length>0 ? (
           <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.10)]">
             <h3 className="text-lg font-semibold mb-3">Mi servidor</h3>
-            { error ? (
-              <div className="text-red-600">{error}</div>
+            { generalError ? (
+              <div className="text-red-600">{generalError}</div>
             ) : (
-              <ServerList servers={servers} />
+              <ServerList 
+                servers={servers}
+                onDelete={handleDelete}
+                onStop={handleStop}
+                onRefresh={loadServers}
+                onStart={handleStart}
+                refreshing={serverLoading}
+              />
             )}
           </section>) 
           : 
@@ -118,9 +181,6 @@ const DashboardPage: React.FC = () => {
             />
           </section>
           )}
-
-          {/* Card: Listado */}
-          
         </div>}
       </main>
     </Layout>

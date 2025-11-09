@@ -51,7 +51,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const getToken = () => state.token || localStorage.getItem('token');
 
-  // util para normalizar si te viene "Bearer ..."
   const normalizeToken = (t: string) => (t?.startsWith('Bearer ') ? t.slice(7) : t);
 
   const logout = () => {
@@ -72,20 +71,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const token = localStorage.getItem('token');
     const email = localStorage.getItem('userEmail');
     if (!token || !email) {
-      // ⬅️ SIN TOKEN: apagá el spinner
       dispatch({ type: 'SET_LOADING', payload: false });
       return;
     }
 
-    // ⬅️ CON TOKEN: pedí /auth/me y luego LOGIN (que apaga loading)
     (async () => {
-      dispatch({ type: 'SET_LOADING', payload: true }); // por si venías en false
+      dispatch({ type: 'SET_LOADING', payload: true });
       try {
         const user = await authRepo.me(email);
-        dispatch({ type: 'LOGIN', payload: { user, token: normalizeToken(token) } }); // loading:false
+        dispatch({ type: 'LOGIN', payload: { user, token: normalizeToken(token) } });
       } catch (e) {
-        // aseguro que el spinner se apague ante error:
-        logout(); // LOGOUT ya pone loading:false
+        logout();
       }
     })();
   }, []);
@@ -95,18 +91,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     token: state.token,
     loading: state.loading,
     login: async (email, password) => {
-      dispatch({ type: 'SET_LOADING', payload: true }); // ⬅️ prende spinner
+      dispatch({ type: 'SET_LOADING', payload: true });
       try {
         console.log("calling login");
-        const { token } = await authRepo.login(email, password); // Dummy: token fake
+        const { token } = await authRepo.login(email, password);
         const raw = normalizeToken(token);
         localStorage.setItem('token', raw);
-        localStorage.setItem('userEmail', email); // optional convenience fallback
+        localStorage.setItem('userEmail', email);
 
         const user = await authRepo.me(email);
-        dispatch({ type: 'LOGIN', payload: { user, token: raw } }); // ⬅️ apaga spinner
+        dispatch({ type: 'LOGIN', payload: { user, token: raw } });
       } catch (e) {
-        // si algo falla, apagá spinner y limpiá
         dispatch({ type: 'SET_LOADING', payload: false });
         logout();
       }
