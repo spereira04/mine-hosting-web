@@ -6,6 +6,7 @@ import { SignUpUseCase } from '@application/usecases/SignUpUseCase';
 import { api } from '@infrastructure/http/axiosClient';
 import { setupInterceptors } from '@infrastructure/http/interceptors';
 import { CognitoAuthRepository } from '@infrastructure/repositories/CognitoAuthRepository';
+import { useToast } from '@presentation/components/ui/ToastProvider';
 
 type State = {
   user: User | null;
@@ -48,6 +49,8 @@ const authRepo = new CognitoAuthRepository();
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, { user: null, token: null, loading: true });
+
+  const { error } = useToast();
 
   const getToken = () => state.token || localStorage.getItem('token');
 
@@ -143,6 +146,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         dispatch({ type: 'LOGIN', payload: { user, token: raw } });
       } catch (e) {
         dispatch({ type: 'SET_LOADING', payload: false });
+        error('', 'Usuario o contraseña incorrectos');
         logout();
       }
     },
