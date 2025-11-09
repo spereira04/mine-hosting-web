@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let alive = true;
     let timer: number | undefined;
 
-    const REFRESH_MS = 5_000;
+    const REFRESH_MS = 300_000;
 
     async function tick() {
       try {

@@ -83,9 +83,7 @@ const DashboardPage: React.FC = () => {
     const available = user?.credits ?? 0;
 
     if (available < required) {
-      error(`You need ${required} credits. You have ${available}.`);
-      // optionally route to store:
-      // nav('/store');
+      error(`Créditos insuficientes: Necesitas ${required} créditos para iniciar este tipo de instancia. Actualmente tienes ${available}.`);
       return;
     }
 
