@@ -18,7 +18,8 @@ import { useToast } from '@presentation/components/ui/ToastProvider';
 import { Version } from '@domain/entities/Version';
 import { Type } from '@domain/entities/Type';
 
-const serverRepo = new HttpServerRepository();
+// const serverRepo = new HttpServerRepository();
+const serverRepo = new DummyServerRepository();
 
 const DashboardPage: React.FC = () => {
   const [servers, setServers] = useState<Server[]>([]);
