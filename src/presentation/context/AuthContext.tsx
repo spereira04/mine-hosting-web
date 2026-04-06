@@ -45,7 +45,8 @@ type ContextType = {
 
 const AuthContext = createContext<ContextType | undefined>(undefined);
 
-const authRepo = new CognitoAuthRepository(); 
+// const authRepo = new CognitoAuthRepository(); 
+const authRepo = new DummyAuthRepository(); 
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, { user: null, token: null, loading: true });
